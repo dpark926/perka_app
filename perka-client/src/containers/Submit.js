@@ -10,15 +10,16 @@ class Submit extends Component {
       email: '',
       positionId: '',
       explanation: '',
-      projects: '',
+      projects: [],
       source: '',
       resume: '',
     }
   }
 
   handleInput = (event) => {
+    let name = event.target.name
     this.setState({
-      input: event.target.value
+      [name]: event.target.value
     })
   }
 
@@ -30,7 +31,14 @@ class Submit extends Component {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        city: this.state.input
+        first_name: this.state.firstName,
+        last_name: this.state.lastName,
+        email: this.state.email,
+        position_id: this.state.positionId,
+        explanation: this.state.explanation,
+        projects: this.state.projects.split(", "),
+        source: this.state.source,
+        resume: this.state.resume,
       })
     })
     .then( res => res.json() )
@@ -43,17 +51,21 @@ class Submit extends Component {
   }
 
   render = () => {
+    let names = Object.keys(this.state)
+    let inputs = names.map( name => {
+      return (
+        <div>
+          <input type="text" onChange={this.handleInput} name={name} placeholder={name}></input><br/>
+          {name}: {this.state[name]}
+        </div>
+      )
+    })
+    console.log(Object.keys(this.state))
+
     return (
       <div>
         <form onSubmit={this.handleSubmit} id="perka-form">
-          <input type="text" onChange={this.handleInput} placeholder="FIRST NAME"></input>
-          <input type="text" onChange={this.handleInput} placeholder="LAST NAME"></input>
-          <input type="text" onChange={this.handleInput} placeholder="EMAIL"></input>
-          <input type="text" onChange={this.handleInput} placeholder="POSTION ID"></input>
-          <input type="text" onChange={this.handleInput} placeholder="EXPLANATION"></input>
-          <input type="text" onChange={this.handleInput} placeholder="PROJECTS"></input>
-          <input type="text" onChange={this.handleInput} placeholder="SOURCE"></input>
-          <input type="text" onChange={this.handleInput} placeholder="RESUME"></input>
+          {inputs}
           <input type="submit" value="SUBMIT"></input>
         </form>
       </div>
